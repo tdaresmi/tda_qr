@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="tr" class="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="TDA QR ile metin, bağlantı ve Wi-Fi için kişiselleştirilebilir QR kodları oluşturun; yüksek çözünürlükte indirin.">
+  <meta property="og:site_name" content="TDA QR">
+  <meta property="og:title" content="TDA QR — Gelişmiş QR Kod Üretici">
+  <meta property="og:description" content="TDA QR ile metin, bağlantı ve Wi-Fi için kişiselleştirilebilir QR kodları oluşturun; yüksek çözünürlükte indirin.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="TDA QR — Gelişmiş QR Kod Üretici">
+  <meta name="twitter:description" content="TDA QR ile metin, bağlantı ve Wi-Fi için kişiselleştirilebilir QR kodları oluşturun; yüksek çözünürlükte indirin.">
+  <title>TDA QR — Gelişmiş QR Kod Üretici</title>
+  <script>
+    try {
+      if (localStorage.getItem('qr-studio-theme') === 'dark' ||
+          (!localStorage.getItem('qr-studio-theme') && matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (_) {}
+    tailwind = { config: { darkMode: 'class' } };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode_UTF8.js"></script>
+  <style>
+    :root { color-scheme: light; }
+    html.dark { color-scheme: dark; }
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: #f7f8fc;
+      background-image: radial-gradient(ellipse at 12% 0%, rgba(99,102,241,.08), transparent 38%), radial-gradient(ellipse at 93% 16%, rgba(14,165,233,.06), transparent 34%);
+    }
+    .dark body {
+      background-color: #090d18;
+      background-image: radial-gradient(ellipse at 10% 0%, rgba(99,102,241,.14), transparent 38%), radial-gradient(ellipse at 92% 14%, rgba(14,165,233,.08), transparent 34%);
+    }
+    .panel { background: rgba(255,255,255,.88); border: 1px solid #e7eaf2; box-shadow: 0 18px 55px rgba(20, 31, 63, .055); }
+    .dark .panel { background: rgba(17,24,39,.88); border-color: #263247; box-shadow: 0 18px 55px rgba(0,0,0,.18); }
+    .field { width:100%; border:1px solid #dfe4ee; border-radius:12px; background:#fff; color:#172033; transition: border-color .18s, box-shadow .18s; }
+    .field:focus { outline:none; border-color:#777cf6; box-shadow:0 0 0 4px rgba(99,102,241,.12); }
+    .dark .field { background:#111827; border-color:#344156; color:#f3f4f6; }
+    .dark .field:focus { border-color:#818cf8; box-shadow:0 0 0 4px rgba(129,140,248,.14); }
+    .tab-button { transition:all .18s ease; }
+    .tab-button[aria-selected="true"] { background:#fff; color:#4338ca; box-shadow:0 1px 4px rgba(25,35,60,.1); }
+    .dark .tab-button[aria-selected="true"] { background:#273249; color:#c7d2fe; box-shadow:none; }
+    .qr-shell { background:linear-gradient(145deg,#f6f7ff,#f2f8ff); }
+    .dark .qr-shell { background:linear-gradient(145deg,#151d2e,#111a29); }
+    #qrStage canvas, #qrStage img { display:block; width:100%; height:100%; image-rendering:pixelated; }
+    .color-input { width:38px; height:38px; padding:3px; background:transparent; border:1px solid #dfe4ee; border-radius:10px; cursor:pointer; }
+    .dark .color-input { border-color:#344156; }
+    summary { list-style:none; }
+    summary::-webkit-details-marker { display:none; }
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 dark:text-slate-100">
+  <div class="mx-auto max-w-6xl px-4 pb-10 pt-5 sm:px-6 sm:pt-8 lg:px-8">
+    <header class="mb-8 flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 dark:focus:ring-indigo-900" aria-label="TDA QR ana sayfa">
+        <span class="grid h-10 w-10 place-items-center rounded-[14px] bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 14h2v2h-2zM18 14h2v6h-2M14 18h2v2h-2" fill="currentColor"/></svg>
+        </span>
+        <span>
+          <span class="block text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">TDA QR</span>
+          <span class="block text-[11px] font-medium text-slate-500 dark:text-slate-400">Gelişmiş QR Kod Üretici</span>
+        </span>
+      </a>
+      <button id="themeToggle" type="button" class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white/80 text-slate-600 transition hover:border-indigo-200 hover:text-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:text-indigo-300 dark:focus:ring-indigo-900" aria-label="Koyu temayı aç" title="Açık/koyu tema">
+        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 15.5A8.5 8.5 0 0 1 8.5 3.6 8.5 8.5 0 1 0 20.4 15.5Z"/></svg>
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="mb-7 max-w-2xl">
+        <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/70 px-3 py-1.5 text-xs font-semibold text-indigo-700 dark:border-indigo-900/70 dark:bg-slate-900/60 dark:text-indigo-300">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Ücretsiz · Tarayıcınızda çalışır
+        </div>
+        <h1 class="text-3xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-[40px] sm:leading-[1.12]">QR kodunu <span class="text-indigo-600 dark:text-indigo-400">kendin tasarla.</span></h1>
+        <p class="mt-3 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-400 sm:text-base">Bir bağlantı, metin ya da Wi-Fi ağı için saniyeler içinde QR kodu oluştur. Logonu ekle, rengini seç ve yüksek çözünürlükte indir.</p>
+      </section>
+
+      <div class="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1.18fr)_minmax(340px,.82fr)] lg:gap-6">
+        <section class="panel min-w-0 rounded-2xl p-5 sm:rounded-3xl sm:p-7" aria-labelledby="editor-title">
+          <div class="mb-5 flex items-start justify-between gap-3">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[.14em] text-indigo-600 dark:text-indigo-400">01 / İçeriğini oluştur</p>
+              <h2 id="editor-title" class="mt-1.5 text-lg font-bold tracking-tight text-slate-900 dark:text-white">Ne için QR kodu?</h2>
+            </div>
+            <span class="rounded-lg bg-slate-100 px-2.5 py-1.5 text-[11px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">Canlı önizleme</span>
+          </div>
+
+          <div id="modeTabs" class="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-800/90" role="tablist" aria-label="QR kod türü">
+            <button class="tab-button rounded-lg px-2 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400" role="tab" aria-selected="true" data-mode="url" type="button">
+              <span class="inline-flex items-center justify-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3A5 5 0 0 0 13 2.93l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3A5 5 0 0 0 11 21.07l1.71-1.71"/></svg>Bağlantı</span>
+            </button>
+            <button class="tab-button rounded-lg px-2 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400" role="tab" aria-selected="false" data-mode="text" type="button">
+              <span class="inline-flex items-center justify-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>Metin</span>
+            </button>
+            <button class="tab-button rounded-lg px-2 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400" role="tab" aria-selected="false" data-mode="wifi" type="button">
+              <span class="inline-flex items-center justify-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9a11 11 0 0 1 14 0M8 12a6.5 6.5 0 0 1 8 0m-5 3a2 2 0 0 1 2 0M12 19h.01"/></svg>Wi-Fi</span>
+            </button>
+          </div>
+
+          <div id="textFields" class="space-y-2">
+            <label id="contentLabel" for="contentInput" class="flex items-center justify-between text-sm font-semibold text-slate-700 dark:text-slate-200"><span>Web sitesi bağlantısı</span><span id="charCount" class="text-xs font-medium text-slate-400">0 karakter</span></label>
+            <textarea id="contentInput" class="field min-h-[120px] resize-y px-4 py-3.5 text-sm leading-6 placeholder:text-slate-400" maxlength="2000" spellcheck="false" autocomplete="off" placeholder="https://ornek.com" aria-describedby="inputHint"></textarea>
+            <p id="inputHint" class="text-xs leading-5 text-slate-500 dark:text-slate-400">Taranınca açılmasını istediğin tam bağlantıyı yaz. Örn: https://ornek.com</p>
+          </div>
+
+          <div id="wifiFields" class="hidden space-y-4">
+            <div class="space-y-2">
+              <label for="wifiName" class="text-sm font-semibold text-slate-700 dark:text-slate-200">Ağ adı (SSID)</label>
+              <input id="wifiName" class="field px-4 py-3 text-sm placeholder:text-slate-400" type="text" maxlength="128" autocomplete="off" placeholder="Örn: Ev Wi-Fi">
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="space-y-2">
+                <label for="wifiSecurity" class="text-sm font-semibold text-slate-700 dark:text-slate-200">Güvenlik</label>
+                <select id="wifiSecurity" class="field px-3.5 py-3 text-sm"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Şifresiz</option></select>
+              </div>
+              <div id="wifiPasswordWrap" class="space-y-2">
+                <label for="wifiPassword" class="text-sm font-semibold text-slate-700 dark:text-slate-200">Şifre</label>
+                <input id="wifiPassword" class="field px-4 py-3 text-sm placeholder:text-slate-400" type="password" maxlength="128" autocomplete="new-password" placeholder="Wi-Fi şifresi">
+              </div>
+            </div>
+            <label class="flex cursor-pointer items-center gap-2.5 text-sm text-slate-600 dark:text-slate-300"><input id="wifiHidden" type="checkbox" class="h-4 w-4 rounded border-slate-300 accent-indigo-600"> Bu ağ gizli</label>
+            <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">Wi-Fi QR kodunu tarayan cihaz, destekliyorsa ağa otomatik bağlanmayı teklif eder.</p>
+          </div>
+
+          <div class="my-6 h-px bg-slate-100 dark:bg-slate-800"></div>
+
+          <div>
+            <div class="mb-3 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Logonu ekle <span class="font-medium text-slate-400">· isteğe bağlı</span></h3>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Görsel yalnızca bu cihazda işlenir.</p>
+              </div>
+              <button id="removeLogo" class="hidden rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-rose-600 dark:hover:bg-slate-800" type="button">Kaldır</button>
+            </div>
+            <label id="uploadDrop" for="logoInput" class="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/70 px-4 py-3.5 transition hover:border-indigo-400 hover:bg-indigo-50/50 dark:border-slate-600 dark:bg-slate-800/40 dark:hover:border-indigo-500 dark:hover:bg-indigo-950/20">
+              <span id="logoThumb" class="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-white text-slate-400 ring-1 ring-slate-200 dark:bg-slate-700 dark:ring-slate-600"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span>
+              <span class="min-w-0 flex-1"><span id="uploadTitle" class="block truncate text-sm font-semibold text-slate-700 dark:text-slate-200">Görsel seç veya buraya bırak</span><span id="uploadSubtitle" class="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">PNG, JPG veya WebP · en fazla 2 MB</span></span>
+              <span class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200">Dosya seç</span>
+            </label>
+            <input id="logoInput" type="file" accept="image/png,image/jpeg,image/webp" class="sr-only">
+            <p class="mt-2 text-[11px] leading-5 text-amber-700 dark:text-amber-300">Logo QR kodunun orta alanını kaplar. Küçük tut ve paylaşmadan önce farklı cihazlarla taranabildiğini mutlaka test et.</p>
+          </div>
+
+          <details class="group mt-5 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
+            <summary class="flex cursor-pointer items-center justify-between gap-3 px-4 py-3.5 text-sm font-semibold text-slate-700 dark:text-slate-200">
+              <span class="inline-flex items-center gap-2"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.64 5.64l2.12 2.12m8.48 8.48 2.12 2.12m0-12.72-2.12 2.12m-8.48 8.48-2.12 2.12"/><circle cx="12" cy="12" r="4"/></svg>Görünümü özelleştir</span>
+              <svg class="transition group-open:rotate-180" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <div class="grid gap-4 border-t border-slate-100 px-4 py-4 dark:border-slate-800 sm:grid-cols-2">
+              <label class="flex items-center justify-between gap-3"><span><span class="block text-sm font-medium text-slate-700 dark:text-slate-200">Kod rengi</span><span class="text-xs text-slate-500 dark:text-slate-400">Ön plan</span></span><input id="darkColor" class="color-input" type="color" value="#172033" aria-label="QR kod rengi"></label>
+              <label class="flex items-center justify-between gap-3"><span><span class="block text-sm font-medium text-slate-700 dark:text-slate-200">Arka plan</span><span class="text-xs text-slate-500 dark:text-slate-400">Açık renk önerilir</span></span><input id="lightColor" class="color-input" type="color" value="#ffffff" aria-label="QR kod arka plan rengi"></label>
+              <label class="sm:col-span-2"><span class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">İndirme boyutu</span><select id="exportSize" class="field px-3.5 py-2.5 text-sm"><option value="800">800 × 800 px</option><option value="1200" selected>1200 × 1200 px · Önerilen</option><option value="1600">1600 × 1600 px</option></select></label>
+            </div>
+          </details>
+        </section>
+
+        <aside class="panel min-w-0 overflow-hidden rounded-2xl sm:rounded-3xl lg:sticky lg:top-6" aria-labelledby="preview-title">
+          <div class="flex items-center justify-between px-5 pb-4 pt-5 sm:px-6 sm:pt-6">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[.14em] text-indigo-600 dark:text-indigo-400">02 / Hazır</p>
+              <h2 id="preview-title" class="mt-1.5 text-lg font-bold tracking-tight text-slate-900 dark:text-white">QR önizlemesi</h2>
+            </div>
+            <span id="liveBadge" class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Canlı</span>
+          </div>
+          <div class="px-5 sm:px-6">
+            <div class="qr-shell relative grid min-h-[310px] place-items-center overflow-hidden rounded-2xl p-5 sm:min-h-[340px]">
+              <div class="pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" style="background-image:radial-gradient(#cbd5e1 1px,transparent 1px);background-size:16px 16px"></div>
+              <div id="qrLoading" class="relative z-10 hidden text-center" role="status"><svg class="spin mx-auto mb-3 text-indigo-500" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".2" stroke-width="3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><p class="text-sm font-medium text-slate-600 dark:text-slate-300">QR kodu hazırlanıyor…</p></div>
+              <div id="qrEmpty" class="relative z-10 hidden max-w-[220px] text-center">
+                <span class="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-white text-slate-400 shadow-sm dark:bg-slate-800 dark:text-slate-500"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-2"/></svg></span>
+                <p id="emptyTitle" class="text-sm font-semibold text-slate-700 dark:text-slate-200">İçeriğini yaz, QR kodun burada belirsin</p>
+                <p id="errorMessage" class="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">Önizleme otomatik olarak güncellenir.</p>
+              </div>
+              <div id="qrCard" class="relative z-10 hidden rounded-[22px] bg-white p-3 shadow-xl shadow-slate-900/10 ring-1 ring-slate-200/70 dark:ring-slate-700/70">
+                <div id="qrStage" class="relative h-[250px] w-[250px] overflow-hidden rounded-xl bg-white sm:h-[270px] sm:w-[270px]"></div>
+              </div>
+            </div>
+            <div class="mt-4 flex min-h-[42px] items-center justify-between gap-3">
+              <div class="min-w-0"><p id="statusText" class="truncate text-sm font-semibold text-slate-800 dark:text-slate-200">QR kodu oluşturuluyor</p><p id="statusSub" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Yüksek kaliteli PNG olarak kaydet</p></div>
+              <span id="dataType" class="shrink-0 rounded-lg bg-slate-100 px-2.5 py-1.5 text-[11px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">URL</span>
+            </div>
+            <button id="downloadButton" type="button" disabled class="mt-4 inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-indigo-600 px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none dark:focus:ring-indigo-900">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></svg><span>PNG olarak indir</span>
+            </button>
+            <div class="mb-5 mt-4 flex items-start gap-2.5 rounded-xl bg-slate-50 px-3.5 py-3 dark:bg-slate-800/70 sm:mb-6">
+              <svg class="mt-0.5 shrink-0 text-indigo-500 dark:text-indigo-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/></svg>
+              <p class="text-[11px] leading-[1.55] text-slate-500 dark:text-slate-400"><span class="font-semibold text-slate-700 dark:text-slate-200">Gizliliğin korunur.</span> QR içeriğin ve yüklediğin görsel bu sayfada, cihazında işlenir; hiçbir sunucuya gönderilmez.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <footer class="mt-7 flex flex-col items-center justify-between gap-2 border-t border-slate-200/70 pt-5 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-500 sm:flex-row sm:text-left">
+        <p>TDA QR <span class="mx-1 text-slate-300 dark:text-slate-700">·</span> Basit, hızlı ve cihazında.</p>
+        <p>Logolu kodlar için taranabilirliği farklı cihazlarda test et.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const state = { mode: 'url', payload: '', logoData: null, logoImage: null, renderTimer: null, generated: false };
+      const modeTabs = [...document.querySelectorAll('[data-mode]')];
+      const contentInput = $('contentInput');
+      const wifiName = $('wifiName');
+      const wifiPassword = $('wifiPassword');
+      const wifiSecurity = $('wifiSecurity');
+      const wifiHidden = $('wifiHidden');
+      const qrStage = $('qrStage');
+      const qrCard = $('qrCard');
+      const qrEmpty = $('qrEmpty');
+      const downloadButton = $('downloadButton');
+      const logoInput = $('logoInput');
+      const darkColor = $('darkColor');
+      const lightColor = $('lightColor');
+      const qrcodeLoaded = typeof window.qrcode === 'function';
+
+      function escapeWifi(value) { return String(value).replace(/([\\;,:\"])/g, '\\$1'); }
+      function createQrMatrix(text) {
+        const qr = qrcode(0, 'H');
+        qr.addData(text);
+        qr.make();
+        return qr;
+      }
+      function makeQrCanvas(text, size, quietZoneRatio = 0) {
+        const qr = createQrMatrix(text);
+        const moduleCount = qr.getModuleCount();
+        const quietZone = Math.round(size * quietZoneRatio);
+        const availableSize = size - quietZone * 2;
+        const moduleSize = Math.floor(availableSize / moduleCount);
+        if (moduleSize < 1) throw new Error('QR kodu bu boyutta çizilemeyecek kadar yoğun.');
+        const codeSize = moduleSize * moduleCount;
+        const offset = Math.floor((size - codeSize) / 2);
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = lightColor.value;
+        ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = darkColor.value;
+        for (let row = 0; row < moduleCount; row++) {
+          for (let col = 0; col < moduleCount; col++) {
+            if (qr.isDark(row, col)) {
+              ctx.fillRect(offset + col * moduleSize, offset + row * moduleSize, moduleSize, moduleSize);
+            }
+          }
+        }
+        return canvas;
+      }
+      function currentPayload() {
+        if (state.mode === 'wifi') {
+          const ssid = wifiName.value.trim();
+          if (!ssid) return '';
+          const security = wifiSecurity.value;
+          const password = security === 'nopass' ? '' : wifiPassword.value;
+          if (security !== 'nopass' && !password) return '';
+          return `WIFI:T:${security};S:${escapeWifi(ssid)};P:${escapeWifi(password)};H:${wifiHidden.checked ? 'true' : 'false'};;`;
+        }
+        return contentInput.value.trim();
+      }
+      function updateModeUI() {
+        modeTabs.forEach((tab) => {
+          const selected = tab.dataset.mode === state.mode;
+          tab.setAttribute('aria-selected', String(selected));
+          tab.tabIndex = selected ? 0 : -1;
+        });
+        const isWifi = state.mode === 'wifi';
+        $('textFields').classList.toggle('hidden', isWifi);
+        $('wifiFields').classList.toggle('hidden', !isWifi);
+        $('wifiPasswordWrap').classList.toggle('hidden', wifiSecurity.value === 'nopass');
+        if (state.mode === 'url') {
+          $('contentLabel').firstElementChild.textContent = 'Web sitesi bağlantısı';
+          contentInput.placeholder = 'https://ornek.com';
+          $('inputHint').textContent = 'Taranınca açılmasını istediğin tam bağlantıyı yaz. Örn: https://ornek.com';
+          $('dataType').textContent = 'URL';
+        } else if (state.mode === 'text') {
+          $('contentLabel').firstElementChild.textContent = 'QR koduna eklenecek metin';
+          contentInput.placeholder = 'Bir mesaj, adres veya kısa not yaz…';
+          $('inputHint').textContent = 'Metin uzadıkça QR kodu daha yoğun hale gelir; kısa içerikler daha kolay taranır.';
+          $('dataType').textContent = 'METİN';
+        } else {
+          $('dataType').textContent = 'WI-FI';
+        }
+        scheduleRender();
+      }
+      function updateCharCount() {
+        const count = [...contentInput.value].length;
+        $('charCount').textContent = `${count} karakter`;
+      }
+      function showError(message, title = 'QR kodu oluşturulamadı') {
+        state.generated = false;
+        qrCard.classList.add('hidden');
+        qrEmpty.classList.remove('hidden');
+        $('emptyTitle').textContent = title;
+        $('errorMessage').textContent = message;
+        $('statusText').textContent = title;
+        $('statusSub').textContent = message;
+        downloadButton.disabled = true;
+        $('liveBadge').innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Dikkat';
+        $('liveBadge').className = 'inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1.5 text-[11px] font-semibold text-rose-700 dark:bg-rose-950/60 dark:text-rose-300';
+      }
+      function resetBadge() {
+        $('liveBadge').innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Canlı';
+        $('liveBadge').className = 'inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300';
+      }
+      function scheduleRender() {
+        clearTimeout(state.renderTimer);
+        state.renderTimer = setTimeout(renderQr, 100);
+      }
+      function renderQr() {
+        const payload = currentPayload();
+        state.payload = payload;
+        if (!payload) {
+          state.generated = false;
+          qrCard.classList.add('hidden');
+          qrEmpty.classList.remove('hidden');
+          $('emptyTitle').textContent = state.mode === 'wifi' ? 'Wi-Fi bilgilerini gir' : 'İçeriğini yaz, QR kodun burada belirsin';
+          $('errorMessage').textContent = state.mode === 'wifi' ? 'Ağ adı ve güvenlik bilgileriyle QR kodun hazır olsun.' : 'Önizleme otomatik olarak güncellenir.';
+          $('statusText').textContent = 'İçerik bekleniyor';
+          $('statusSub').textContent = 'İçeriğini ekleyince QR kodun oluşur';
+          downloadButton.disabled = true;
+          $('liveBadge').innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span> Bekliyor';
+          $('liveBadge').className = 'inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1.5 text-[11px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400';
+          return;
+        }
+        if (!qrcodeLoaded) { showError('QR kod kütüphanesi yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.'); return; }
+        try {
+          qrStage.innerHTML = '';
+          const qrCanvas = makeQrCanvas(payload, 540);
+          qrCanvas.className = 'block h-full w-full';
+          qrCanvas.style.width = '100%';
+          qrCanvas.style.height = '100%';
+          qrCanvas.style.imageRendering = 'pixelated';
+          qrStage.appendChild(qrCanvas);
+          if (state.logoData) {
+            const logo = document.createElement('img');
+            logo.src = state.logoData;
+            logo.alt = '';
+            logo.className = 'absolute left-1/2 top-1/2 h-[14%] w-[14%] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white object-contain p-0.5 ring-[5px] ring-white shadow-md sm:rounded-xl sm:ring-[6px]';
+            qrStage.appendChild(logo);
+          }
+          qrEmpty.classList.add('hidden');
+          qrCard.classList.remove('hidden');
+          state.generated = true;
+          downloadButton.disabled = false;
+          $('statusText').textContent = 'QR kodun hazır';
+          $('statusSub').textContent = `${$('exportSize').value} × ${$('exportSize').value} px · PNG`;
+          resetBadge();
+        } catch (error) {
+          console.warn('QR oluşturma hatası:', error);
+          const detail = payload.length > 900 ? 'İçerik QR kodu için çok uzun. Daha kısa bir metin dene.' : 'İçeriği veya renk ayarlarını kontrol edip yeniden dene.';
+          showError(detail);
+        }
+      }
+      function acceptLogo(file) {
+        if (!file) return;
+        const supported = ['image/png', 'image/jpeg', 'image/webp'];
+        if (!supported.includes(file.type)) { showUploadError('Lütfen PNG, JPG veya WebP dosyası seç.'); return; }
+        if (file.size > 2 * 1024 * 1024) { showUploadError('Görsel 2 MB sınırını aşıyor. Daha küçük bir dosya seç.'); return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            state.logoData = reader.result;
+            state.logoImage = img;
+            $('uploadTitle').textContent = file.name;
+            $('uploadSubtitle').textContent = `${Math.max(1, Math.round(file.size / 1024))} KB · merkezde gösterilecek`;
+            $('logoThumb').innerHTML = '';
+            const thumb = document.createElement('img'); thumb.src = state.logoData; thumb.alt = ''; thumb.className = 'h-full w-full object-cover'; $('logoThumb').appendChild(thumb);
+            $('removeLogo').classList.remove('hidden');
+            scheduleRender();
+          };
+          img.onerror = () => showUploadError('Bu görsel açılamadı. Başka bir dosya dene.');
+          img.src = reader.result;
+        };
+        reader.onerror = () => showUploadError('Görsel okunamadı. Tekrar dene.');
+        reader.readAsDataURL(file);
+      }
+      function showUploadError(message) {
+        $('uploadTitle').textContent = message;
+        $('uploadTitle').classList.add('text-rose-600', 'dark:text-rose-400');
+        setTimeout(() => $('uploadTitle').classList.remove('text-rose-600', 'dark:text-rose-400'), 2600);
+      }
+      function clearLogo() {
+        state.logoData = null; state.logoImage = null; logoInput.value = '';
+        $('uploadTitle').textContent = 'Görsel seç veya buraya bırak';
+        $('uploadSubtitle').textContent = 'PNG, JPG veya WebP · en fazla 2 MB';
+        $('logoThumb').innerHTML = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>';
+        $('removeLogo').classList.add('hidden');
+        scheduleRender();
+      }
+      function roundedRect(ctx, x, y, width, height, radius) {
+        if (typeof ctx.roundRect === 'function') { ctx.beginPath(); ctx.roundRect(x, y, width, height, radius); ctx.fill(); }
+        else { ctx.fillRect(x, y, width, height); }
+      }
+      async function makeExportCanvas() {
+        const size = Number($('exportSize').value) || 1200;
+        const output = makeQrCanvas(state.payload, size, 0.08);
+        const ctx = output.getContext('2d');
+        if (state.logoImage) {
+          const center = size / 2;
+          const backing = size * 0.205;
+          const logoLimit = size * 0.145;
+          ctx.save();
+          ctx.fillStyle = lightColor.value;
+          roundedRect(ctx, center - backing / 2, center - backing / 2, backing, backing, size * 0.018);
+          const scale = Math.min(logoLimit / state.logoImage.naturalWidth, logoLimit / state.logoImage.naturalHeight);
+          const logoW = state.logoImage.naturalWidth * scale;
+          const logoH = state.logoImage.naturalHeight * scale;
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(state.logoImage, center - logoW / 2, center - logoH / 2, logoW, logoH);
+          ctx.restore();
+        }
+        return output;
+      }
+      async function downloadPng() {
+        if (!state.generated || !state.payload) return;
+        const buttonText = downloadButton.querySelector('span');
+        const original = buttonText.textContent;
+        downloadButton.disabled = true; buttonText.textContent = 'Hazırlanıyor…';
+        try {
+          const canvas = await makeExportCanvas();
+          const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+          if (!blob) throw new Error('PNG dosyası hazırlanamadı');
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+          link.href = url; link.download = `qr-kodu-${stamp}.png`;
+          document.body.appendChild(link); link.click(); link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1500);
+          buttonText.textContent = 'İndirildi';
+          setTimeout(() => { buttonText.textContent = original; downloadButton.disabled = !state.generated; }, 1600);
+        } catch (error) {
+          console.error(error);
+          buttonText.textContent = 'İndirme başarısız';
+          setTimeout(() => { buttonText.textContent = original; downloadButton.disabled = !state.generated; }, 1800);
+        }
+      }
+
+      modeTabs.forEach((tab) => tab.addEventListener('click', () => { state.mode = tab.dataset.mode; updateModeUI(); }));
+      contentInput.addEventListener('input', () => { updateCharCount(); scheduleRender(); });
+      [wifiName, wifiPassword, wifiSecurity, wifiHidden].forEach((el) => el.addEventListener('input', () => { if (el === wifiSecurity) updateModeUI(); else scheduleRender(); }));
+      [darkColor, lightColor].forEach((el) => el.addEventListener('input', scheduleRender));
+      $('exportSize').addEventListener('change', () => { $('statusSub').textContent = `${$('exportSize').value} × ${$('exportSize').value} px · PNG`; });
+      logoInput.addEventListener('change', (event) => acceptLogo(event.target.files[0]));
+      $('removeLogo').addEventListener('click', clearLogo);
+      $('downloadButton').addEventListener('click', downloadPng);
+      $('uploadDrop').addEventListener('dragover', (event) => { event.preventDefault(); $('uploadDrop').classList.add('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950/20'); });
+      $('uploadDrop').addEventListener('dragleave', () => $('uploadDrop').classList.remove('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950/20'));
+      $('uploadDrop').addEventListener('drop', (event) => { event.preventDefault(); $('uploadDrop').classList.remove('border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950/20'); acceptLogo(event.dataTransfer.files[0]); });
+      $('themeToggle').addEventListener('click', () => {
+        const dark = document.documentElement.classList.toggle('dark');
+        try { localStorage.setItem('qr-studio-theme', dark ? 'dark' : 'light'); } catch (_) {}
+        $('themeToggle').setAttribute('aria-label', dark ? 'Açık temayı aç' : 'Koyu temayı aç');
+        $('themeIcon').innerHTML = dark
+          ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>'
+          : '<path d="M20.4 15.5A8.5 8.5 0 0 1 8.5 3.6 8.5 8.5 0 1 0 20.4 15.5Z"/>';
+      });
+      $('themeToggle').setAttribute('aria-label', document.documentElement.classList.contains('dark') ? 'Açık temayı aç' : 'Koyu temayı aç');
+      contentInput.value = 'https://example.com';
+      updateCharCount();
+      updateModeUI();
+    })();
+  </script>
+</body>
+</html>
